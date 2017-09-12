@@ -1,27 +1,27 @@
 export class Reless {
-  state
+  appState
   reducers
 
   constructor(initializer) {
     initializer = initializer || {}
-    this.state = { ...initializer.state } || {}
+    this.appState = { ...initializer.state } || {}
     let reducers = { ...initializer.reducers } || {}
 
     this.reducers = Object.keys(
       reducers,
     ).reduce((acc, name) => {
       const reducer = reducers[name]
-      acc[name] = (payload) => {
+      acc[name] = payload => {
         let withState = reducer(payload)
         if (typeof withState === 'function') {
-          let withUpdate = withState(this.state)
+          let withUpdate = withState(this.appState)
           if (typeof withUpdate === 'function') {
             withUpdate(this.update.bind(this))
           } else {
-            this.state = merge(this.state, withUpdate)
+            this.appState = merge(this.appState, withUpdate)
           }
         } else {
-          this.state = merge(this.state, withState)
+          this.appState = merge(this.appState, withState)
         }
       }
       return acc
@@ -30,15 +30,23 @@ export class Reless {
 
   update(updateFn) {
     if (typeof updateFn === 'function') {
-      let result = updateFn(this.state)
+      let result = updateFn(this.appState)
       if (result === 'function') {
         this.update(result)
       } else {
-        this.state = merge(this.state, result)
+        this.appState = merge(this.appState, result)
       }
     } else {
-      this.state = merge(this.state, updateFn)
+      this.appState = merge(this.appState, updateFn)
     }
+  }
+
+  set state(state) {
+    this.appState = state;
+  }
+
+  get state() {
+    return { ...this.appState }
   }
 }
 

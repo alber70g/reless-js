@@ -17,7 +17,7 @@ let initial = {
 
 test('Reless returns an object with state and reducers', () => {
   let store = new Reless()
-  expect(store['state']).toBeTruthy()
+  expect(store['appState']).toBeTruthy()
   expect(store['reducers']).toBeTruthy()
 })
 
@@ -53,7 +53,7 @@ test("when creating two Reless instances from initial, states don't update both"
   expect(store.state.counter).toBe(10)
 
   let store2 = new Reless(initial)
-  expect(store2.state.counter).toBe(0)
+  expect(store2.appState.counter).toBe(0)
 })
 
 jest.useFakeTimers()
@@ -159,4 +159,17 @@ test('when calling a reducer asynchronous with payload, the payload is passed an
   expect(store.state.count).toBe(3)
   jest.runTimersToTime(1000)
   expect(store.state.count).toBe(0)
+})
+
+test('it is not possible to change the state directly', () => {
+  let store = new Reless({
+    state: { count: 3 },
+    reducers: {
+      doAsync: ({ count }) => () => update => {},
+    },
+  })
+
+  expect(store.state.count).toBe(3)
+  store.state.count = 1
+  expect(store.state.count).toBe(3)
 })
