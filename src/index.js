@@ -11,8 +11,8 @@ export class Reless {
       reducers,
     ).reduce((acc, name) => {
       const reducer = reducers[name]
-      acc[name] = () => {
-        let withState = reducer()
+      acc[name] = (payload) => {
+        let withState = reducer(payload)
         if (typeof withState === 'function') {
           let withUpdate = withState(this.state)
           if (typeof withUpdate === 'function') {

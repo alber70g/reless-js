@@ -8,6 +8,7 @@ let initial = {
     addToCounter: () => state => ({
       counter: state.counter + 1,
     }),
+    setCounterTo: ({ counter }) => ({ counter: counter }),
   },
   state: {
     counter: 0,
@@ -129,6 +130,33 @@ test('update async with setInterval, should use latest state', () => {
   expect(store.state.count).toBe(2)
   jest.runTimersToTime(1000)
   expect(store.state.count).toBe(1)
+  jest.runTimersToTime(1000)
+  expect(store.state.count).toBe(0)
+})
+
+test('when calling a reducer with a payload, the payload is passed and used', () => {
+  let store = new Reless(initial)
+  store.reducers.setCounterTo({ counter: 5 })
+  expect(store.state.counter).toBe(5)
+})
+
+test('when calling a reducer asynchronous with payload, the payload is passed and used', () => {
+  let store = new Reless({
+    state: { count: 3 },
+    reducers: {
+      doAsync: ({ count }) => () => update => {
+        setTimeout(() => {
+          update(state => {
+            return { count: count }
+          })
+        }, 1000)
+      },
+    },
+  })
+
+  expect(store.state.count).toBe(3)
+  store.reducers.doAsync({ count: 0 })
+  expect(store.state.count).toBe(3)
   jest.runTimersToTime(1000)
   expect(store.state.count).toBe(0)
 })
