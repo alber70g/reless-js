@@ -1,8 +1,8 @@
 export class Reless {
   constructor(initializer) {
     initializer = initializer || {}
-    this.appState = { ...initializer.state } 
-    let reducers = { ...initializer.reducers } 
+    this.appState = { ...initializer.state }
+    let reducers = { ...initializer.reducers }
 
     this.reducers = Object.keys(
       reducers,
@@ -36,10 +36,6 @@ export class Reless {
     } else {
       this.appState = merge(this.appState, updateFn)
     }
-  }
-
-  set state(state) {
-    this.appState = state
   }
 
   get state() {
