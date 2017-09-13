@@ -161,15 +161,20 @@ test('when calling a reducer asynchronous with payload, the payload is passed an
   expect(store.state.count).toBe(0)
 })
 
-test('it is not possible to change the state directly', () => {
+test('it is not possible to change the state directly, for non-nested properties', () => {
   let store = new Reless({
-    state: { count: 3 },
+    state: { count: 3, nest: { prop: 1 } },
     reducers: {
       doAsync: ({ count }) => () => update => {},
     },
   })
 
   expect(store.state.count).toBe(3)
-  store.state.count = 1
+  expect(() => {
+    store.state.count = 1
+  }).toThrowError()
   expect(store.state.count).toBe(3)
+  // Nested properties aren't protected, use immutablejs if you want this
+  store.state.nest.prop = 2;
+  expect(store.state.nest.prop).toBe(2)
 })

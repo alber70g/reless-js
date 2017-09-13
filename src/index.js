@@ -4,20 +4,29 @@ export class Reless {
     this.appState = { ...initializer.state }
     let reducers = { ...initializer.reducers }
 
+    // Wrap all reducers so they can be called directly
     this.reducers = Object.keys(
       reducers,
     ).reduce((acc, name) => {
       const reducer = reducers[name]
+      // wrap the reducer in a function accepting the payload
       acc[name] = payload => {
+        // call the reducer with the payload
         let withState = reducer(payload)
         if (typeof withState === 'function') {
+          // the reducer returned another function (withStateFn), 
+          // call withStateFn with the state
           let withUpdate = withState(this.appState)
           if (typeof withUpdate === 'function') {
+            // the withStateFn returned a function (withUpdateFn)
+            // call withUpdateFn with the update function 
             withUpdate(this.update.bind(this))
           } else {
+            // merge the object from withStateFn with the current state
             this.appState = merge(this.appState, withUpdate)
           }
         } else {
+          // merge the object from the reducer with the current state
           this.appState = merge(this.appState, withState)
         }
       }
@@ -39,7 +48,7 @@ export class Reless {
   }
 
   get state() {
-    return { ...this.appState }
+    return Object.freeze({ ...this.appState })
   }
 }
 
