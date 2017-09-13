@@ -62,10 +62,11 @@ test('when doing something async, a reducer can update state twice', () => {
   let store = new Reless({
     state: { loading: false, count: 0 },
     reducers: {
-      doAsync: () => () => update => {
-        update({ loading: true })
+      setLoading: loading => ({ loading }),
+      doAsync: () => () => ({ setLoading }) => {
+        setLoading(true)
         setTimeout(() => {
-          update({ loading: false })
+          setLoading(false)
         }, 1)
       },
     },
@@ -80,43 +81,39 @@ test('when doing something async, a reducer can update state twice', () => {
 
 test('when doing async, a reducer can update the state based on the latest state', () => {
   let store = new Reless({
-    state: { loading: false, count: 0 },
+    state: { count: 0 },
     reducers: {
-      doAsync: () => () => update => {
-        update(state => ({
-          loading: true,
-          count: state.count + 1,
-        }))
+      setLoading: loading => ({ loading }),
+      setCount: count => ({ count }),
+      doAsync: () => state => reducers => {
+        reducers.setCount(20)
         setTimeout(() => {
-          update(() => ({
-            loading: false,
-          }))
+          reducers.setCount(state => state.count + 1)
         }, 1000)
       },
     },
   })
 
-  expect(store.state.loading).toBe(false)
   expect(store.state.count).toBe(0)
   store.reducers.doAsync()
-  expect(store.state.count).toBe(1)
-  expect(store.state.loading).toBe(true)
+  expect(store.state.count).toBe(20)
   jest.runAllTimers()
-  expect(store.state.loading).toBe(false)
+  expect(store.state.count).toBe(21)
 })
 
 test('update async with setInterval, should use latest state', () => {
   let store = new Reless({
     state: { count: 3 },
     reducers: {
-      doAsync: () => () => update => {
+      setCount: count => ({ count }),
+      doAsync: () => () => ({ setCount }) => {
         let interval = setInterval(() => {
-          update(state => {
+          setCount(state => {
             if (state.count === 1) {
               clearInterval(interval)
-              return { count: 0 }
+              return 0
             }
-            return { count: state.count - 1 }
+            return state.count - 1
           })
         }, 1000)
       },
@@ -144,13 +141,12 @@ test('when calling a reducer asynchronous with payload, the payload is passed an
   let store = new Reless({
     state: { count: 3 },
     reducers: {
-      doAsync: ({ count }) => () => update => {
+      doAsync: ({ count }) => () => reducers => {
         setTimeout(() => {
-          update(state => {
-            return { count: count }
-          })
+          reducers.setCount(count)
         }, 1000)
       },
+      setCount: count => ({ count: count }),
     },
   })
 
@@ -164,9 +160,6 @@ test('when calling a reducer asynchronous with payload, the payload is passed an
 test('it is not possible to change the state directly, for non-nested properties', () => {
   let store = new Reless({
     state: { count: 3, nest: { prop: 1 } },
-    reducers: {
-      doAsync: ({ count }) => () => update => {},
-    },
   })
 
   expect(store.state.count).toBe(3)
@@ -175,6 +168,6 @@ test('it is not possible to change the state directly, for non-nested properties
   }).toThrowError()
   expect(store.state.count).toBe(3)
   // Nested properties aren't protected, use immutablejs if you want this
-  store.state.nest.prop = 2;
+  store.state.nest.prop = 2
   expect(store.state.nest.prop).toBe(2)
 })
