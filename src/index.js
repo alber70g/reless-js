@@ -1,11 +1,8 @@
 export class Reless {
-  appState
-  reducers
-
   constructor(initializer) {
     initializer = initializer || {}
-    this.appState = { ...initializer.state } || {}
-    let reducers = { ...initializer.reducers } || {}
+    this.appState = { ...initializer.state } 
+    let reducers = { ...initializer.reducers } 
 
     this.reducers = Object.keys(
       reducers,
@@ -42,7 +39,7 @@ export class Reless {
   }
 
   set state(state) {
-    this.appState = state;
+    this.appState = state
   }
 
   get state() {
