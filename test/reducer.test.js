@@ -8,7 +8,7 @@ let initial = {
     addToCounter: () => state => ({
       counter: state.counter + 1,
     }),
-    setCounterTo: ({ counter }) => ({ counter: counter }),
+    setCounterTo: ({ counter }) => ({ counter }),
   },
   state: {
     counter: 0,
@@ -141,12 +141,12 @@ test('when calling a reducer asynchronous with payload, the payload is passed an
   let store = new Reless({
     state: { count: 3 },
     reducers: {
-      doAsync: ({ count }) => () => reducers => {
+      setCount: count => ({ count }),
+      doAsync: ({ count }) => () => ({ setCount }) => {
         setTimeout(() => {
-          reducers.setCount(count)
+          setCount(count)
         }, 1000)
       },
-      setCount: count => ({ count: count }),
     },
   })
 
