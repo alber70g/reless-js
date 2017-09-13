@@ -14,7 +14,7 @@ export class Reless {
         }
         // call the reducer with the payload
         let withState = reducer(payload)
-        // define withReducers to be able to merge lateron
+        // define withReducers to be able to _merge lateron
         let withReducers = null
         if (typeof withState === 'function') {
           // the reducer returned another function (withStateFn),
@@ -26,8 +26,8 @@ export class Reless {
             withReducers(this.reducers)
           }
         }
-        // merge the result of either function with the current state
-        this.appState = merge(this.appState, withReducers || withState)
+        // _merge the result of either function with the current state
+        this.appState = this._merge(this.appState, withReducers || withState)
       }
       return acc
     }, {})
@@ -36,11 +36,11 @@ export class Reless {
   get state() {
     return Object.freeze({ ...this.appState })
   }
-}
 
-function merge(a, b) {
-  for (var i in b) {
-    a[i] = b[i]
+  _merge(a, b) {
+    for (var i in b) {
+      a[i] = b[i]
+    }
+    return a
   }
-  return a
 }

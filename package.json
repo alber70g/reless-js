@@ -20,5 +20,8 @@
     "transform": {
       ".*\\.js": "babel-jest"
     }
+  },
+  "quokka": {
+    "babel": true
   }
 }
