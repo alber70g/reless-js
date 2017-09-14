@@ -144,14 +144,14 @@ store.state.counter // 5
 If you want to do something asynchronous, your reducer should be of type
 `payload => state => reducers => void`
 
-Here you get all the reducers that you can call here. This way we can keep track
-of the reducer calls. 
+Here the reducers get passed on. You can call them inside another reducer. This 
+way we can keep track of the reducer calls.
 
 We've had some prior art, where we passed an `update` function, 
-but the issue with that is: you cannot really log what is happening since you only 
-pass a new state instead of calling a reducer. In terms of Redux, you want to have 
+but we experienced an issue with that: you cannot log what is happening since you only 
+pass a new state instead of calling a reducer. In terms of Redux, you want to dispatch 
 an action and not directly set a state, so that you have a nice trail of actions 
-that are dispatched, to see where bugs are happening.
+that are dispatched in order to see where bugs are happening.
 
 ```js
 let store = new Reless({
