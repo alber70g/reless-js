@@ -1,7 +1,10 @@
 # Reless-js
-A state management library, inspired by Flux architecture and the Redux implementation, 
-but this implementation gets rid of the `actions` and `dispatch`-function for 
-these actions.
+A state management library, inspired by Flux architecture and the Redux implementation.
+
+This implementation slightly deviates from the Flux spec, and doesn't work with 
+actions and dispatching of actions. In Reless you can semi-directly call a reducer with 
+some payload, while still keeping a single state, the unidirectional dataflow and 
+possibilities to use the Redux-devtools.
 
 - [Reless-js](#reless-js)
   - [Concepts](#concepts)
@@ -139,24 +142,30 @@ store.state.counter // 5
 ## Example with asynchronous call in reducer 
 
 If you want to do something asynchronous, your reducer should be of type
-`payload => state => update => void`
+`payload => state => reducers => void`
 
-Here `update` is a function that accepts the new state: `state => void`. This allows to set the 
-state in an asynchronous matter.
+Here you get all the reducers that you can call here. This way we can keep track
+of the reducer calls. 
+
+We've had some prior art, where we passed an `update` function, 
+but the issue with that is: you cannot really log what is happening since you only 
+pass a new state instead of calling a reducer. In terms of Redux, you want to have 
+an action and not directly set a state, so that you have a nice trail of actions 
+that are dispatched, to see where bugs are happening.
 
 ```js
 let store = new Reless({
   state: { counter: 0 },
   reducers: { 
-    doAsync: () => () => update => {
-      update({ loading: true })
+    setLoading: loading => ({ loading })
+    doAsync: () => () => (reducers) => {
+      reducers.setLoading(true)
       setTimeout(() => {
-        update({ loading: false })
+        reducers.setLoading(false)
       }, 1000)
     }
   },
 })
-
 
 store.reducers.doAsync()
 store.state.loading // true
@@ -166,23 +175,24 @@ store.state.loading // false
 
 ## Asynchronous example using the newest state
 
-When returning a function in the `update` call, it'll be called with the latest
+When returning a function in the `reducer` call, it'll be called with the latest
 state. This will allow you to create a countdown based on the last state.
 
-The function passed in `update` has the following type: `state => state`.
+The function passed to the `reducer` has the following type: `state => state`.
 
 ```js
   let store = new Reless({
     state: { counter: 3 },
     reducers: {
-      countdown: () => () => update => {
+      setCounter: (counter) => ({ counter })
+      countdown: () => () => reducers => {
         let interval = setInterval(() => {
-          update(state => { 
+          reducers.setCounter(state => { 
             if (state.counter === 1) {
               clearInterval(interval)
-              return { counter: 0 }
+              return 0
             }
-            return { counter: state.counter - 1 }
+            return state.counter - 1
           })
         }, 1000)
       },
