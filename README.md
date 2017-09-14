@@ -1,6 +1,7 @@
 # Reless-js
 A state management library, inspired by Flux architecture and the Redux implementation, 
-but this implementation gets rid of the `actions` and `dispatch` of these actions.
+but this implementation gets rid of the `actions` and `dispatch`-function for 
+these actions.
 
 - [Reless-js](#reless-js)
   - [Concepts](#concepts)
@@ -92,7 +93,7 @@ small, you'd like something more to the point. This is where Relessjs can help.
 
 # Relessjs (to the rescue)
 
-> *Have a look at this branch to see the basic scenarios: 'feature/showcase-fixed'*
+> *Have a look here to see the basic scenarios [test/showcase](test/showcase)*
 
 So... You still want to use a single state, but looking at these 4 files, Redux might be overkill. 
 Now you can use Relessjs to create a store, call reducers "directly" and update the state
