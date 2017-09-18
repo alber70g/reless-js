@@ -1,4 +1,4 @@
-import { Reless } from '../src'
+import { Reless } from '../../src'
 
 test('showcase: update the state to two', () => {
   let store = new Reless({
@@ -45,10 +45,11 @@ test('showcase: do something asynchronous', () => {
   let store = new Reless({
     state: { counter: 1, loading: false },
     reducers: {
-      doAsync: () => () => update => {
-        update({ loading: true })
+      setLoading: loading => ({ loading }),
+      doAsync: () => () => reducers => {
+        reducers.setLoading(true)
         setTimeout(() => {
-          update({ loading: false })
+          reducers.setLoading(false)
         }, 1000)
       },
     },
@@ -65,9 +66,10 @@ test('showcase: do something async, with the latest state', () => {
   let store = new Reless({
     state: { counter: 3, loading: false },
     reducers: {
-      startCountingDown: () => () => update => {
+      setCounter: ({ counter }) => ({ counter }),
+      startCountingDown: () => () => reducers => {
         let interval = setInterval(() => {
-          update(state => { 
+          reducers.setCounter(state => {
             if (state.counter === 1) {
               clearInterval(interval)
               return { counter: 0 }

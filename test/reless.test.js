@@ -1,4 +1,5 @@
 import { Reless } from '../src'
+import Relessfact from '../src'
 
 let initial = {
   reducers: {
@@ -17,6 +18,12 @@ let initial = {
 
 test('Reless returns an object with state and reducers', () => {
   let store = new Reless()
+  expect(store['appState']).toBeTruthy()
+  expect(store['reducers']).toBeTruthy()
+})
+
+test('Reless returns an object with state and reducers when using factory method', () => {
+  let store = Relessfact()
   expect(store['appState']).toBeTruthy()
   expect(store['reducers']).toBeTruthy()
 })
