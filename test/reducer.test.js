@@ -171,3 +171,21 @@ test('it is not possible to change the state directly, for non-nested properties
   store.state.nest.prop = 2
   expect(store.state.nest.prop).toBe(2)
 })
+
+test('after state update, listener "newState" gets called with new payload', () => {
+  let newStateMock = jest.fn()
+
+  let store = new Reless({
+    state: { counter: 0 },
+    reducers: {
+      setCounter: () => ({ counter: 1 }),
+    },
+    events: {
+      newState: newStateMock,
+    },
+  })
+
+  store.reducers.setCounter()
+  expect(newStateMock.mock.calls.length).toBe(1)
+  expect(newStateMock.mock.calls[0][0]).toEqual({ counter: 1 })
+})

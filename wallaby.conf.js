@@ -2,7 +2,7 @@ module.exports = (wallaby) => {
   return {
     testFramework: 'jest',
     files: ['src/*.js'],
-    tests: ['test/*.js'],
+    tests: ['test/**/*.test.js'],
     env: {
       type: 'node',
       runner: 'node',

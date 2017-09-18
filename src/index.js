@@ -3,6 +3,7 @@ export class Reless {
     initializer = initializer || {}
     this.appState = { ...initializer.state }
     let reducers = { ...initializer.reducers }
+    let events = { ...initializer.events }
 
     // Wrap all reducers so they can be called directly
     this.reducers = Object.keys(reducers).reduce((acc, name) => {
@@ -28,6 +29,7 @@ export class Reless {
         }
         // _merge the result of either function with the current state
         this.appState = this._merge(this.appState, withReducers || withState)
+        if (events.newState) events.newState(this.state)
       }
       return acc
     }, {})
@@ -44,3 +46,4 @@ export class Reless {
     return a
   }
 }
+export default () => new Reless()
