@@ -1,4 +1,4 @@
-export class Reless {
+export default class Reless {
   constructor(initializer) {
     initializer = initializer || {}
     this.appState = { ...initializer.state }
@@ -46,4 +46,3 @@ export class Reless {
     return a
   }
 }
-export default () => new Reless()

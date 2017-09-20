@@ -1,4 +1,4 @@
-import { Reless } from '../../src'
+import Reless from '../../src'
 
 test('showcase: update the state to two', () => {
   let store = new Reless({
