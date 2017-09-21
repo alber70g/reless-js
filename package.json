@@ -5,6 +5,7 @@
   "main": "dist/reless.js",
   "jsnext:main": "src/index.js",
   "module": "src/index.js",
+  "types": "src/index.d.ts",
   "license": "MIT",
   "repository": "alber70g/reless-js",
   "scripts": {
