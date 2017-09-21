@@ -1,7 +1,7 @@
 {
   "name": "relessjs",
   "description": "Simplified alternative of Flux architecture using function calls as 'emitting implicit actions'",
-  "version": "0.0.1",
+  "version": "0.0.2-beta",
   "main": "dist/reless.js",
   "jsnext:main": "src/index.js",
   "module": "src/index.js",

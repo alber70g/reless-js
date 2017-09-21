@@ -31,8 +31,9 @@ var Reless = function () {
         }
         // call the reducer with the payload
         var withState = reducer(payload);
-        // define withReducers to be able to _merge lateron
+        // define withReducers and fromWithReducers to be able to _merge lateron
         var withReducers = null;
+        var fromWithReducers = null;
         if (typeof withState === 'function') {
           // the reducer returned another function (withStateFn),
           // call withStateFn with the state
@@ -40,11 +41,11 @@ var Reless = function () {
           if (typeof withReducers === 'function') {
             // the withStateFn returned a function (withReducersFn)
             // call withReducersFn with the reducers
-            withReducers(_this.reducers);
+            fromWithReducers = withReducers(_this.reducers);
           }
         }
         // _merge the result of either function with the current state
-        _this.appState = _this._merge(_this.appState, withReducers || withState);
+        _this.appState = _this._merge(_this.appState, fromWithReducers || withReducers || withState);
         if (events.newState) events.newState(_this.state);
       };
       return acc;

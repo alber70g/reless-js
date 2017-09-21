@@ -15,8 +15,9 @@ export default class Reless {
         }
         // call the reducer with the payload
         let withState = reducer(payload)
-        // define withReducers to be able to _merge lateron
+        // define withReducers and fromWithReducers to be able to _merge lateron
         let withReducers = null
+        let fromWithReducers = null
         if (typeof withState === 'function') {
           // the reducer returned another function (withStateFn),
           // call withStateFn with the state
@@ -24,11 +25,14 @@ export default class Reless {
           if (typeof withReducers === 'function') {
             // the withStateFn returned a function (withReducersFn)
             // call withReducersFn with the reducers
-            withReducers(this.reducers)
+            fromWithReducers = withReducers(this.reducers)
           }
         }
         // _merge the result of either function with the current state
-        this.appState = this._merge(this.appState, withReducers || withState)
+        this.appState = this._merge(
+          this.appState,
+          fromWithReducers || withReducers || withState,
+        )
         if (events.newState) events.newState(this.state)
       }
       return acc

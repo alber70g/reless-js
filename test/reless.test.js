@@ -8,7 +8,7 @@ let initial = {
     add: () => {},
     setCounterToTen: () => ({ counter: 10 }),
     setNewProperty: () => ({ newProp: 1 }),
-    addToCounter: () => state => ({
+    increment: () => state => ({
       counter: state.counter + 1,
     }),
     setCounterTo: ({ counter }) => ({ counter }),
@@ -44,9 +44,9 @@ test('when calling a reducer that creates a new property on the state, the prope
 
 test('when calling a reducer that uses state, the state is updated', () => {
   let store = new Reless(initial)
-  store.reducers.addToCounter()
+  store.reducers.increment()
   expect(store.state.counter).toBe(1)
-  store.reducers.addToCounter()
+  store.reducers.increment()
   expect(store.state.counter).toBe(2)
 })
 
@@ -119,12 +119,14 @@ test('update async with setInterval, should use latest state', () => {
             return state.count - 1
           })
         }, 1000)
+        return ({ started: true })
       },
     },
   })
 
   expect(store.state.count).toBe(3)
   store.reducers.doAsync()
+  expect(store.state.started).toBe(true)
   expect(store.state.count).toBe(3)
   jest.runTimersToTime(1000)
   expect(store.state.count).toBe(2)
