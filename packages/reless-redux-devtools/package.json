@@ -1,0 +1,20 @@
+{
+  "name": "reless-redux-devtools",
+  "version": "0.0.1",
+  "description": "Bindings for redux-devtools for Relessjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alber70g/reless-js.git"
+  },
+  "keywords": ["redux", "reless", "flux", "unidirectional"],
+  "author": "Albert G",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/alber70g/reless-js/issues"
+  },
+  "homepage": "https://github.com/alber70g/reless-js#readme"
+}
