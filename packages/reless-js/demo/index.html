@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <div id="app"></div>
+  <script src="../dist/reless.js"></script>
+  <script>
+    var render = state => {
+      var body = document.getElementById('app');
+      body.innerHTML = `
+        <button onclick="window.increment()">increment</button>
+        count: ${state.counter}`;
+    }
+    var reless = new window.reless({
+      state: { counter: 0 },
+      reducers: {
+        increment: () => state => ({ counter: state.counter + 1 })
+      },
+      events: {
+        newState: render,
+        reducer: (state, action) => state
+      }
+    });
+    window.__REDUX_DEVTOOLS_EXTENSION__(reless.events.reducer);
+    window.increment = () => reless.reducers.increment();
+    render(reless.state);
+  </script>
+</body>
+
+</html>

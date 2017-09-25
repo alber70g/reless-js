@@ -20,12 +20,14 @@ var Reless = function () {
     this.appState = _extends({}, initializer.state);
     var reducers = _extends({}, initializer.reducers);
     var events = _extends({}, initializer.events);
-
+    this.events = events;
     // Wrap all reducers so they can be called directly
     this.reducers = Object.keys(reducers).reduce(function (acc, name) {
       var reducer = reducers[name];
       // wrap the reducer in a function accepting the payload
       acc[name] = function (payload) {
+        // reducer to use for __REDUX_DEVTOOLS_EXTENSION__
+        if (events.reducer) events.reducer(_this.state, name);
         if (typeof payload === 'function') {
           payload = payload(_this.state);
         }

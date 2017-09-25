@@ -4,12 +4,14 @@ export default class Reless {
     this.appState = { ...initializer.state }
     let reducers = { ...initializer.reducers }
     let events = { ...initializer.events }
-
+    this.events = events
     // Wrap all reducers so they can be called directly
     this.reducers = Object.keys(reducers).reduce((acc, name) => {
       const reducer = reducers[name]
       // wrap the reducer in a function accepting the payload
       acc[name] = payload => {
+        // reducer to use for __REDUX_DEVTOOLS_EXTENSION__
+        if (events.reducer) events.reducer(this.state, name)
         if (typeof payload === 'function') {
           payload = payload(this.state)
         }
