@@ -21,13 +21,18 @@ var Reless = function () {
     var reducers = _extends({}, initializer.reducers);
     var events = _extends({}, initializer.events);
     this.events = events;
+
+    var devTools = window.__REDUX_DEVTOOLS_EXTENSION__ ? window.__REDUX_DEVTOOLS_EXTENSION__.connect() : undefined;
+    devTools && devTools.init(this.appState);
+    devTools && (reducers.setState = function (payload) {
+      return JSON.parse(payload);
+    });
+
     // Wrap all reducers so they can be called directly
     this.reducers = Object.keys(reducers).reduce(function (acc, name) {
       var reducer = reducers[name];
       // wrap the reducer in a function accepting the payload
       acc[name] = function (payload) {
-        // reducer to use for __REDUX_DEVTOOLS_EXTENSION__
-        if (events.reducer) events.reducer(_this.state, name);
         if (typeof payload === 'function') {
           payload = payload(_this.state);
         }
@@ -48,10 +53,16 @@ var Reless = function () {
         }
         // _merge the result of either function with the current state
         _this.appState = _this._merge(_this.appState, fromWithReducers || withReducers || withState);
+        // send to redux dev tools
+        name !== 'setState' && devTools && devTools.send({ type: name, payload: payload }, _this.appState);
         if (events.newState) events.newState(_this.state);
       };
       return acc;
     }, {});
+
+    devTools && devTools.subscribe(function (message) {
+      message.type === 'DISPATCH' && message.state && _this.reducers.setState(message.state);
+    });
   }
 
   _createClass(Reless, [{

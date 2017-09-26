@@ -3,8 +3,10 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible"
+    content="ie=edge">
   <title>Document</title>
 </head>
 
@@ -15,21 +17,44 @@
     var render = state => {
       var body = document.getElementById('app');
       body.innerHTML = `
-        <button onclick="window.increment()">increment</button>
-        count: ${state.counter}`;
+        <button onclick="reless.reducers.increment()">increment</button>
+        <br><button onclick="reless.reducers.countDown()">start countdown</button>
+        <br><button onclick="reless.reducers.countUpFast()">start count up fast</button>
+        <br><button onclick="reless.reducers.cancelCountUpFast()">stop count up</button>
+        <br><button onclick="reless.reducers.incrementBy(20)">increment with 20</button>
+        <br>count: ${state.counter}`;
     }
     var reless = new window.reless({
       state: { counter: 0 },
       reducers: {
-        increment: () => state => ({ counter: state.counter + 1 })
+        increment: () => state => ({ counter: state.counter + 1 }),
+        decrement: () => state => ({ counter: state.counter - 1 }),
+        incrementBy: count => state => ({ counter: state.counter + count }),
+        countDown: () => () => reducers => {
+          var handler = setInterval(() => {
+            reducers.decrement(state => {
+              if (state.counter <= 1)
+                clearInterval(handler)
+            });
+          }, 1000)
+        },
+        countUpFast: () => () => reducers => {
+          var handler = setInterval(() => {
+            reducers.increment(state => {
+            });
+          }, 500)
+          return ({ countUpFastHandler: handler })
+        },
+        cancelCountUpFast: () => state => {
+          state.countUpFastHandler && clearInterval(state.countUpFastHandler)
+          return ({ countUpFastHandler: undefined })
+        }
       },
       events: {
         newState: render,
-        reducer: (state, action) => state
       }
     });
-    window.__REDUX_DEVTOOLS_EXTENSION__(reless.events.reducer);
-    window.increment = () => reless.reducers.increment();
+
     render(reless.state);
   </script>
 </body>
