@@ -19,7 +19,7 @@ possibilities to use the Redux-devtools.
 
 ### Flux
 
-Flux architecture is build around unidirectional data-flow.
+Flux architecture is built around unidirectional data-flow.
 
 You `dispatch` an `action`, that's is being `reduced` on the current `state`.
 After all reducers finished doing their job, the listeners are called to 
@@ -102,16 +102,16 @@ So... You still want to use a single state, but looking at these 4 files, Redux 
 Now you can use Relessjs to create a store, call reducers "directly" and update the state
 in a unidirectional flow.
 
-With `Relessjs` we can give you exactly that, but with less files and 
+With `Relessjs` we can give you exactly that, but with fewer files and 
 **no constants**. Your reducer *is* your action. So you *call* your reducer, and
 watch the state change.
 
 ## Example without and with state in the reducer
 
 Let's give a simple example of a counter:
-- setCountToOne: call a reducer 
-- setCount: call a reducer with a payload
-- incrementCounter: call a reducer, and use the previous state
+- `setCountToOne`: call a reducer 
+- `setCount`: call a reducer with a payload
+- `incrementCounter`: call a reducer, and use the previous state
 
 The simplest form of the `reducer` is of type `payload => (state | (state => state))`. 
 
